@@ -18,9 +18,22 @@ class FormatSectionTestCase(HttpSessionTestCase):
         )
 
         context = self.execution_ctx_cls._init_compiled(
-            bind.dialect, bind, bind, statement, []
+            bind.dialect, bind, bind, {}, statement, [], clause, []
         )
         context.pre_exec()
+
+        # def _init_compiled(
+        #         dialect,
+        #         connection,
+        #         dbapi_connection,
+        #         execution_options,
+        #         compiled,
+        #         parameters,
+        #         invoked_statement,
+        #         extracted_parameters,
+        #         cache_hit=CACHING_DISABLED,
+        # ):
+        #     # cls, dialect, connection, dbapi_connection, compiled, parameters
 
         return context.statement
 
@@ -57,7 +70,8 @@ class FormatSectionTestCase(HttpSessionTestCase):
             Column('x', types.Int32, primary_key=True)
         )
 
-        query = t2.insert() \
-            .from_select(['x'], self.session.query(t1.c.x).subquery())
+        query = t2.insert().from_select(['x'], self.session.query(t1.c.x))
         statement = self.compile(query, bind=bind)
-        self.assertEqual(statement, 'INSERT INTO t2 (x) SELECT t1.x FROM t1')
+        self.assertEqual(
+            statement, 'INSERT INTO t2 (x) SELECT t1.x AS t1_x FROM t1'
+        )

@@ -8,14 +8,12 @@ from . import connector
 # Export connector version
 VERSION = (0, 0, 2, None)
 
-FORMAT_SUFFIX = 'FORMAT TabSeparatedWithNamesAndTypes'
-
 
 class ClickHouseExecutionContext(ClickHouseExecutionContextBase):
     def pre_exec(self):
         # TODO: refactor
         if not self.isinsert and not self.isddl:
-            self.statement += ' ' + FORMAT_SUFFIX
+            self.statement += ' FORMAT TabSeparatedWithNamesAndTypes'
 
 
 class ClickHouseDialect_http(ClickHouseDialect):
@@ -28,10 +26,10 @@ class ClickHouseDialect_http(ClickHouseDialect):
 
     def create_connect_args(self, url):
         kwargs = {}
-        protocol = url.query.pop('protocol', 'http')
+        protocol = url.query.get('protocol', 'http')
         port = url.port or 8123
         db_name = url.database or 'default'
-        endpoint = url.query.pop('endpoint', '')
+        endpoint = url.query.get('endpoint', '')
 
         kwargs.update(url.query)
 
@@ -47,7 +45,7 @@ class ClickHouseDialect_http(ClickHouseDialect):
         return connection.execute(sql, **kwargs)
 
     def _query_server_version_string(self, connection):
-        query = 'select version() {}'.format(FORMAT_SUFFIX)
+        query = 'select version()'
         return connection.scalar(query)
 
 

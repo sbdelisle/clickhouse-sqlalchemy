@@ -2,7 +2,7 @@ import re
 from contextlib import contextmanager
 from unittest import TestCase
 
-from sqlalchemy import MetaData
+from sqlalchemy import MetaData, LABEL_STYLE_NONE
 from sqlalchemy.orm import Query
 
 from tests.config import database, host, port, http_port, user, password
@@ -35,13 +35,14 @@ class BaseAbstractTestCase(object):
             bind = self.session.bind
         if isinstance(clause, Query):
             context = clause._compile_context()
-            context.statement.use_labels = True
-            clause = context.statement
+            clause = context.query
 
         kw = {}
         compile_kwargs = {}
         if literal_binds:
             compile_kwargs['literal_binds'] = True
+        else:
+            compile_kwargs['render_postcompile'] = True
 
         if compile_kwargs:
             kw['compile_kwargs'] = compile_kwargs

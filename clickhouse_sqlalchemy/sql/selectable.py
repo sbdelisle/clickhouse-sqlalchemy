@@ -65,5 +65,5 @@ class Select(StandardSelect):
                     strictness=strictness, distribution=distribution)
 
 
-select = Select
-join = Join
+select = Select._create
+join = Join._create_join
