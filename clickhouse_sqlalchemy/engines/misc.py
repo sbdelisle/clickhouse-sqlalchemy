@@ -111,6 +111,10 @@ class Null(_NoParamsEngine):
     pass
 
 
+class TurbineStorage(_NoParamsEngine):
+    pass
+
+
 class File(Engine):
     supported_data_formats = {
         'tabseparated': 'TabSeparated',
