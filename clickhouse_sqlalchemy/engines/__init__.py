@@ -5,7 +5,7 @@ from .mergetree import (
 )
 from .misc import (
     Distributed, View, MaterializedView,
-    Buffer, TinyLog, Log, Memory, Null, File
+    Buffer, TinyLog, Log, Memory, Null, File, TurbineStorage
 )
 from .replicated import (
     ReplicatedMergeTree, ReplicatedAggregatingMergeTree,
@@ -36,5 +36,6 @@ __all__ = (
     Log,
     Memory,
     Null,
-    File
+    File,
+    TurbineStorage,
 )
