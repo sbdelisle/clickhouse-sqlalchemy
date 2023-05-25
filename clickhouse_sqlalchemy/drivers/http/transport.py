@@ -167,10 +167,12 @@ class RequestsTransport(object):
         params['database'] = self.db_name
         params.update(self.ch_settings)
 
+        headers =headers={**self.headers, "x-clickhouse-format": "TabSeparatedWithNamesAndTypes"}
+
         # TODO: retries, prepared requests
         r = self.http.post(
             self.db_url, auth=self.auth, params=params, data=data,
-            stream=stream, timeout=self.timeout, headers=self.headers,
+            stream=stream, timeout=self.timeout, headers=headers,
             verify=self.verify, cert=self.cert
         )
         if r.status_code != 200:
